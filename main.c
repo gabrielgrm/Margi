@@ -101,7 +101,7 @@ int main(void)
    InitWindow(screenWidth, screenHeight, "margi");
    InitAudioDevice();
 
-   Texture2D personagemTexture = LoadTexture("./resources/textures/personagemTexture.png");
+   Texture2D personagemTexture = LoadTexture("./resources/textures/personagem.png");
    Texture2D menuTela = LoadTexture("./resources/textures/menuTela.png");
    Texture2D background = LoadTexture("./resources/textures/fundoAzul.png");
    Texture2D cloudTex = LoadTexture("./resources/textures/nuvem.png");
@@ -132,10 +132,6 @@ int main(void)
    posicaoLogoX = GetScreenWidth() / 2 - 128;
    posicaoLogoY = GetScreenHeight() / 2 - 128;
 
-   Vector2 posicaoPersonagem = {posicaoYSolo, screenHeight / 2.0f};
-   Vector2 velocidadePersonagem = {0.0f, 0.0f};
-   Vector2 movimentoNuvem = {0.0f, 0.0f};
-
    Rectangle frameRec = {0.0f, 0.0f, (float)frameWidth, (float)personagemTexture.height};
    Rectangle plataforma1 = {plataforma1X, plataformaY, 350, 80};
    Rectangle plataforma2 = {plataforma2X, plataformaY, 350, 80};
@@ -144,6 +140,10 @@ int main(void)
    Rectangle alternativa2 = {985, 250, 80, 80};
    
    unsigned posicaoYSolo = 580 - personagemTexture.height;
+
+   Vector2 posicaoPersonagem = {580, screenHeight / 2.0f};
+   Vector2 velocidadePersonagem = {0.0f, 0.0f};
+   Vector2 movimentoNuvem = {0.0f, 0.0f};
 
    SetTargetFPS(60);
    
