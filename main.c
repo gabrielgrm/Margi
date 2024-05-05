@@ -112,7 +112,7 @@ int main(void)
    Texture2D seta = LoadTexture("./resources/textures/seta.png");
    Texture2D inserirNome = LoadTexture("./resources/textures/digitarNick.png");
    Texture2D piso = LoadTexture("./resources/textures/piso.png");
-   Texture2D leaderboard = LoadTexture("./resources/textures/ranks.png");
+   Texture2D leaderboard = LoadTexture("./resources/textures/leaderboard.png");
    Texture2D relogio = LoadTexture("./resources/textures/relogio.png");
 
    Image iconePersonagem = LoadImage("./resources/textures/personagemico.png");
@@ -127,6 +127,7 @@ int main(void)
    SetSoundVolume(somPulo, 0.10f);
    SetSoundVolume(somMusicaMenu, 0.20f);
    SetSoundVolume(somClickBotao, 1.0f);
+   SetSoundVolume(somAlternativaCorreta, 0.10f);
 
    int frameWidth = personagemTexture.width / quantidadeFrames;
    posicaoLogoX = GetScreenWidth() / 2 - 128;
@@ -820,8 +821,10 @@ int main(void)
                PlaySound(somClickBotao);
                tocarsomBotao = 1;
             }
-         Rectangle sairX = {1027, 138, 34, 34};
+         Rectangle sairX = {564, 569, 128, 52};
+         Rectangle sairY = {555, 578, 145, 35};
          ClearBackground(RAYWHITE);
+         
          DrawTexture(leaderboard, 0, 0, WHITE);
          FILE *arquivo;
          arquivo = fopen("./include/ranking.txt", "r");
@@ -832,28 +835,32 @@ int main(void)
          char tempoStr[10];
          char minutosStr[5];
          char segundosStr[5];
+         char posicao[5];
          int i = 0;
          while (fscanf(arquivo, "%s %lf", nome, &tempo) != EOF)
          {
             if (i < 5) {
                minutos = (int)tempo / 60;
                segundos = (int)tempo % 60;
+               itoa(i + 1, posicao, 10);
                itoa(minutos, minutosStr, 10);
                itoa(segundos, segundosStr, 10);
                strcpy(tempoStr, minutosStr);
                strcat(tempoStr, "m");
                strcat(tempoStr, segundosStr);
                strcat(tempoStr, "s");
-               DrawText(nome, 280, 218 + i * 58, 30, (Color){215, 147, 34, 255});//144, 37, 29, 255
-               DrawText(nome, 280, 215 + i * 58, 30, BLACK);
-               DrawText(tempoStr, 900, 218 + i * 58, 30, (Color) {215, 147, 34, 255});
-               DrawText(tempoStr, 900, 215 + i * 58, 30, BLACK);
-               DrawTexture(relogio, 865, 210 + i * 58, WHITE);
+               strcat(posicao, ". ");
+               strcat(posicao, nome);
+               DrawText(posicao, 320, 218 + i * 58, 30, (Color){144, 37, 29, 120});//144, 37, 29, 255
+               DrawText(posicao, 320, 215 + i * 58, 30, BLACK);
+               DrawText(tempoStr, 890, 218 + i * 58, 30, (Color) {144, 37, 29, 120});
+               DrawText(tempoStr, 890, 215 + i * 58, 30, BLACK);
+               DrawTexture(relogio, 855, 210 + i * 58, WHITE);
             }
             i++;
          }
          fclose(arquivo);
-         if (CheckCollisionPointRec(GetMousePosition(), sairX) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && telaFinalizada == 1)
+         if ((CheckCollisionPointRec(GetMousePosition(), sairX) || CheckCollisionPointRec(GetMousePosition(), sairY))&& IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && telaFinalizada == 1)
          {
             PlaySound(somClickBotao);
             telaRanking = false;
