@@ -114,6 +114,9 @@ int main(void)
    Texture2D piso = LoadTexture("./resources/textures/piso.png");
    Texture2D leaderboard = LoadTexture("./resources/textures/leaderboard.png");
    Texture2D relogio = LoadTexture("./resources/textures/relogio.png");
+   Texture2D setaF = LoadTexture("./resources/textures/setaF.png");
+   Texture2D setaT = LoadTexture("./resources/textures/setaT.png");
+   Texture2D voltarHome = LoadTexture("./resources/textures/iconesVoltar.png");
 
    Image iconePersonagem = LoadImage("./resources/textures/personagemico.png");
    SetWindowIcon(iconePersonagem);
@@ -152,6 +155,7 @@ int main(void)
    Contas *head2 = NULL, *tail2 = NULL;
    Contas *head3 = NULL, *tail3 = NULL;
    bool telaMenu = false;
+   bool menuLateralAberto = false;
 
    // Primeiro Nível - Fácil
    inserir(&head1, &tail1, "6*0", "0", "6");
@@ -237,20 +241,21 @@ int main(void)
    leftSideRecHeight = 16;
    bottomSideRecWidth = 16;
    rightSideRecHeight = 16;
-   
    estado = 0;
    alpha = 1.0f;
-
+   bool menuLateral = false;
+   int animacaoSetaMenu = 0;
    while (!WindowShouldClose()) // detecta se a janela foi fechada com o X ou o ESC
    {
       Rectangle startGame = {489, 343, 277, 37};
       Rectangle ranks = {576, 395, 124, 37};
       Rectangle exit = {590, 445, 97, 36};
-      Rectangle foot = {posicaoPersonagem.x, posicaoPersonagem.y + 110, personagemTexture.width / 3, personagemTexture.height - 100};
-      Rectangle head = {posicaoPersonagem.x, posicaoPersonagem.y + 10, personagemTexture.width / 3, personagemTexture.height - 100};
-      Rectangle lado1 = {posicaoPersonagem.x, posicaoPersonagem.y + 20, personagemTexture.width / 9, personagemTexture.height - 30};
-      Rectangle lado2 = {posicaoPersonagem.x + 70, posicaoPersonagem.y + 20, personagemTexture.width / 9, personagemTexture.height - 30};
+      Rectangle foot = {posicaoPersonagem.x + 40, posicaoPersonagem.y + 130, (personagemTexture.width / 3) - 85, personagemTexture.height - 125};
+      Rectangle head = {posicaoPersonagem.x + 40, posicaoPersonagem.y + 10, (personagemTexture.width / 3) - 85, personagemTexture.height - 125};
+      Rectangle lado1 = {posicaoPersonagem.x + 25, posicaoPersonagem.y + 20, (personagemTexture.width / 9) - 30, personagemTexture.height - 30};
+      Rectangle lado2 = {posicaoPersonagem.x + 80, posicaoPersonagem.y + 20, (personagemTexture.width / 9) - 30, personagemTexture.height - 30};
       Rectangle nickname = {502, 363, 277, 38};
+      
 
       bool plataform1Collision = CheckCollisionRecs(foot, plataforma1);
       bool plataform2Collision = CheckCollisionRecs(foot, plataforma2);
@@ -259,7 +264,7 @@ int main(void)
       bool OnFloor = CheckCollisionRecs(foot, floor);
       bool alternativa1Collision = CheckCollisionRecs(foot, alternativa1);
       bool alternativa2Collision = CheckCollisionRecs(foot, alternativa2);
-
+      
       //----------------------------------------------------------------------------------
 
       if (nuvemEsquerda)
@@ -458,9 +463,7 @@ int main(void)
          posicaoPersonagem.x = posicaoPersonagem.x - 20;
          velocidadePersonagem.y += gravidade;
          batendoLado = true;
-      }
-      else if (CheckCollisionRecs(foot, floor))
-      {
+      } else {
          batendoLado = false;
       }
 
@@ -699,7 +702,6 @@ int main(void)
                   }
                   else
                   {
-                     DrawText(head3->erradas, 277, 252, 80, GRAY);
                      DrawText(head3->erradas, 275, 250, 80, BLACK);
                      DrawText(head3->resposta, 1007, 252, 80, GRAY);
                      DrawText(head3->resposta, 1005, 252, 80, BLACK);
@@ -711,6 +713,54 @@ int main(void)
                DrawTexture(plataforma, 830, 320, WHITE);
                itoa(acertos, acertosStr, 10);
                DrawText(acertosStr, 10, 10, 40, BLACK);
+                              Rectangle setaMenu = {0,79, 16, 40};
+               if(menuLateral) {
+                  Rectangle home = {22,79,39,40};
+
+                  DrawTexture(setaT, 0, 0, WHITE); 
+                  if (animacaoSetaMenu <= 120) {
+                     DrawTexture(setaF, -100, 0, WHITE);
+                  }
+                  else if (animacaoSetaMenu <= 240) {
+                     DrawTexture(voltarHome, -80, 0, WHITE);
+                  }
+                  else if(animacaoSetaMenu <= 480 ) {
+                     DrawTexture(voltarHome, -60, 0, WHITE);
+                  }
+                  else if(animacaoSetaMenu <= 720) {
+                     DrawTexture(voltarHome, -40, 0, WHITE);
+                  }
+                  else if(animacaoSetaMenu <= 960) {
+                     DrawTexture(voltarHome, -20, 0, WHITE);
+                  } else {
+                     DrawTexture(voltarHome, 0, 0, WHITE);
+                     menuLateralAberto = true;
+                     if (CheckCollisionPointRec(GetMousePosition(), home) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                        menuLateralAberto = false;
+                        telaMenu = true;
+                        acertos = 0;
+                        erros = 0;
+                        menuLateral = false;
+                        cadastro = false;                      
+                     }
+                  }
+                  animacaoSetaMenu+= 100;
+
+                  
+               }
+               if(CheckCollisionPointRec(GetMousePosition(), setaMenu) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !menuLateral) {
+                  PlaySound(somClickBotao);
+                  menuLateral = true;
+               }
+               if(!menuLateral) {
+                  DrawTexture(setaF, 0,0, WHITE);
+               }
+               if(menuLateral && menuLateralAberto && CheckCollisionPointRec(GetMousePosition(), setaMenu) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                  PlaySound(somClickBotao);
+                  menuLateral = false;
+                  menuLateralAberto = false;
+                  animacaoSetaMenu = 0;
+               }
                if (respostaCorreta)
                {
                   DrawText("RESPOSTA CORRETA", 360, 80, 40, GREEN);
@@ -788,9 +838,58 @@ int main(void)
                DrawTexture(trofeu, 556, 412, WHITE);
                DrawText("PARABENS, VOCE VENCEU!", 369, 104, 40, DARKBLUE);
                DrawText("PARABENS, VOCE VENCEU!", 365, 100, 40, WHITE);
+                              Rectangle setaMenu = {0,79, 16, 40};
+               if(menuLateral) {
+                  Rectangle home = {22,79,39,40};
+
+                  DrawTexture(setaT, 0, 0, WHITE); 
+                  if (animacaoSetaMenu <= 120) {
+                     DrawTexture(setaF, -100, 0, WHITE);
+                  }
+                  else if (animacaoSetaMenu <= 240) {
+                     DrawTexture(voltarHome, -80, 0, WHITE);
+                  }
+                  else if(animacaoSetaMenu <= 480 ) {
+                     DrawTexture(voltarHome, -60, 0, WHITE);
+                  }
+                  else if(animacaoSetaMenu <= 720) {
+                     DrawTexture(voltarHome, -40, 0, WHITE);
+                  }
+                  else if(animacaoSetaMenu <= 960) {
+                     DrawTexture(voltarHome, -20, 0, WHITE);
+                  } else {
+                     DrawTexture(voltarHome, 0, 0, WHITE);
+                     menuLateralAberto = true;
+                     if (CheckCollisionPointRec(GetMousePosition(), home) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                        menuLateralAberto = false;
+                        telaMenu = true;
+                        acertos = 0;
+                        erros = 0;
+                        menuLateral = false;
+                        cadastro = false;                      
+                     }
+                  }
+                  animacaoSetaMenu+= 100;
+
+                  
+               }
+               if(CheckCollisionPointRec(GetMousePosition(), setaMenu) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !menuLateral) {
+                  PlaySound(somClickBotao);
+                  menuLateral = true;
+               }
+               if(!menuLateral) {
+                  DrawTexture(setaF, 0,0, WHITE);
+               }
+               if(menuLateral && menuLateralAberto && CheckCollisionPointRec(GetMousePosition(), setaMenu) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                  PlaySound(somClickBotao);
+                  menuLateral = false;
+                  menuLateralAberto = false;
+                  animacaoSetaMenu = 0;
+               }
             }
             else
             {
+               
                ClearBackground(RAYWHITE);
                DrawTextureEx(background, (Vector2){0, 0}, 0.0f, 2.3f, WHITE);
                DrawTextureEx(cloudTex, movimentoNuvem, 0.0f, 2.3f, WHITE);
@@ -809,6 +908,54 @@ int main(void)
                if (piscando == 60)
                {
                   piscando = 0;
+               }
+                              Rectangle setaMenu = {0,79, 16, 40};
+               if(menuLateral) {
+                  Rectangle home = {22,79,39,40};
+
+                  DrawTexture(setaT, 0, 0, WHITE); 
+                  if (animacaoSetaMenu <= 120) {
+                     DrawTexture(setaF, -100, 0, WHITE);
+                  }
+                  else if (animacaoSetaMenu <= 240) {
+                     DrawTexture(voltarHome, -80, 0, WHITE);
+                  }
+                  else if(animacaoSetaMenu <= 480 ) {
+                     DrawTexture(voltarHome, -60, 0, WHITE);
+                  }
+                  else if(animacaoSetaMenu <= 720) {
+                     DrawTexture(voltarHome, -40, 0, WHITE);
+                  }
+                  else if(animacaoSetaMenu <= 960) {
+                     DrawTexture(voltarHome, -20, 0, WHITE);
+                  } else {
+                     DrawTexture(voltarHome, 0, 0, WHITE);
+                     menuLateralAberto = true;
+                     if (CheckCollisionPointRec(GetMousePosition(), home) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                        menuLateralAberto = false;
+                        telaMenu = true;
+                        acertos = 0;
+                        erros = 0;
+                        menuLateral = false;
+                        cadastro = false;                      
+                     }
+                  }
+                  animacaoSetaMenu+= 100;
+
+                  
+               }
+               if(CheckCollisionPointRec(GetMousePosition(), setaMenu) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !menuLateral) {
+                  PlaySound(somClickBotao);
+                  menuLateral = true;
+               }
+               if(!menuLateral) {
+                  DrawTexture(setaF, 0,0, WHITE);
+               }
+               if(menuLateral && menuLateralAberto && CheckCollisionPointRec(GetMousePosition(), setaMenu) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                  PlaySound(somClickBotao);
+                  menuLateral = false;
+                  menuLateralAberto = false;
+                  animacaoSetaMenu = 0;
                }
             }
          }
