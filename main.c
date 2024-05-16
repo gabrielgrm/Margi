@@ -48,7 +48,9 @@ void inserir(Contas **head, Contas **tail, const char *perguntas, char *resposta
 void excluirAtual(Contas **head, Contas **tail, Contas *atual);
 void ordenarRanking(const char *nomeArquivo);
 void insertionSort(Registro registros[], int n);
-int compararTempos(const void *a, const void *b);
+void limpar(Contas **head, Contas **tail);
+void inserirPerguntas(Contas **head1, Contas **tail1, Contas **head2, Contas **tail2, Contas **head3, Contas **tail3);
+void contarAcertosErros(Contas *head, int *acertos, int *erros);
 
 int main(void)
 {
@@ -68,8 +70,7 @@ int main(void)
    static int rightSideRecHeight = 0;
    static int estado = 0;
    static float alpha = 1.0f;
-
-   char acertosStr[4];
+   
    char nomeRecebido[20] = "";
 
    int piscando = 0;
@@ -117,6 +118,7 @@ int main(void)
    Texture2D setaF = LoadTexture("./resources/textures/setaF.png");
    Texture2D setaT = LoadTexture("./resources/textures/setaT.png");
    Texture2D voltarHome = LoadTexture("./resources/textures/iconesVoltar.png");
+   Texture voltarHomeSemSom = LoadTexture("./resources/textures/iconesVoltarSemSom.png");
 
    Image iconePersonagem = LoadImage("./resources/textures/personagemico.png");
    SetWindowIcon(iconePersonagem);
@@ -156,87 +158,25 @@ int main(void)
    Contas *head3 = NULL, *tail3 = NULL;
    bool telaMenu = false;
    bool menuLateralAberto = false;
+   bool semSom = false;
 
    // Primeiro Nível - Fácil
-   inserir(&head1, &tail1, "6*0", "0", "6");
-   inserir(&head1, &tail1, "7+9", "16", "15");
-   inserir(&head1, &tail1, "8+13", "21", "24");
-   inserir(&head1, &tail1, "3+7", "10", "14");
-   inserir(&head1, &tail1, "4+3", "7", "12");
-   inserir(&head1, &tail1, "5-2", "3", "4");
-   inserir(&head1, &tail1, "6-1", "5", "4");
-   inserir(&head1, &tail1, "3*9", "27", "18");
-   inserir(&head1, &tail1, "3*2", "6", "8");
-   inserir(&head1, &tail1, "9+8", "17", "18");
-   inserir(&head1, &tail1, "4+5", "9", "10");
-   inserir(&head1, &tail1, "12*2", "24", "22");
-   inserir(&head1, &tail1, "9*1", "9", "8");
-   inserir(&head1, &tail1, "5*2", "10", "11");
-   inserir(&head1, &tail1, "1+9", "10", "11");
-   inserir(&head1, &tail1, "6+3", "9", "10");
-   inserir(&head1, &tail1, "7-4", "3", "2");
-   inserir(&head1, &tail1, "8-3", "5", "6");
-   inserir(&head1, &tail1, "9-2", "7", "8");
-   inserir(&head1, &tail1, "10-1", "9", "8");
-
-   // Segundo Nível - Médio
-   inserir(&head2, &tail2, "12+15", "27", "25");
-   inserir(&head2, &tail2, "14-6", "8", "9");
-   inserir(&head2, &tail2, "18/2", "9", "8");
-   inserir(&head2, &tail2, "16*2", "32", "34");
-   inserir(&head2, &tail2, "25/5", "5", "4");
-   inserir(&head2, &tail2, "27+9", "36", "34");
-   inserir(&head2, &tail2, "35-9", "26", "27");
-   inserir(&head2, &tail2, "22*2", "44", "46");
-   inserir(&head2, &tail2, "45/9", "5", "6");
-   inserir(&head2, &tail2, "12*4", "48", "50");
-   inserir(&head2, &tail2, "36/6", "6", "7");
-   inserir(&head2, &tail2, "23-5", "18", "17");
-   inserir(&head2, &tail2, "20/4", "5", "6");
-   inserir(&head2, &tail2, "36/3", "12", "9");
-   inserir(&head2, &tail2, "42-17", "25", "29");
-   inserir(&head2, &tail2, "60/12", "5", "4");
-   inserir(&head2, &tail2, "63+15", "78", "74");
-   inserir(&head2, &tail2, "53-20", "33", "31");
-   inserir(&head2, &tail2, "15*3", "45", "44");
-   inserir(&head2, &tail2, "32+17", "49", "51");
-
-   // Terceiro Nível - Difícil
-   inserir(&head3, &tail3, "72/8", "9", "10");
-   inserir(&head3, &tail3, "70*70", "1400", "140");
-   inserir(&head3, &tail3, "127-42", "85", "75");
-   inserir(&head3, &tail3, "9*12", "108", "99");
-   inserir(&head3, &tail3, "65*3", "195", "196");
-   inserir(&head3, &tail3, "12*11", "132", "144");
-   inserir(&head3, &tail3, "44*1.5", "66", "78");
-   inserir(&head3, &tail3, "29*3", "87", "97");
-   inserir(&head3, &tail3, "68*1.5", "102", "92");
-   inserir(&head3, &tail3, "102-37", "65", "75");
-   inserir(&head3, &tail3, "12/1.5", "8", "10");
-   inserir(&head3, &tail3, "12^0", "1", "12");
-   inserir(&head3, &tail3, "0!", "1", "0");
-   inserir(&head3, &tail3, "203-18", "185", "175");
-   inserir(&head3, &tail3, "183/3", "61", "63");
-   inserir(&head3, &tail3, "15*17", "255", "240");
-   inserir(&head3, &tail3, "225/5", "45", "44");
-   inserir(&head3, &tail3, "24*8", "192", "210");
-   inserir(&head3, &tail3, "255+45", "300", "299");
-   inserir(&head3, &tail3, "193-25", "168", "158");
-
-   // sorteando em qual pergunta começar
+   inserirPerguntas(&head1,&tail1, &head2, &tail2, &head3, &tail3);
    for (int i = 0; i < rand() % 20; i++)
    {
       head1 = head1->prox;
+      tail1 = tail1->prox;
    }
    for (int i = 0; i < rand() % 20; i++)
    {
       head2 = head2->prox;
+      tail2 = tail2->prox;
    }
    for (int i = 0; i < rand() % 20; i++)
    {
       head3 = head3->prox;
+      tail3 = tail3->prox;
    }
-
    topSideRecWidth = 16;
    leftSideRecHeight = 16;
    bottomSideRecWidth = 16;
@@ -711,11 +651,10 @@ int main(void)
                DrawTextureRec(personagemTexture, frameRec, posicaoPersonagem, WHITE);
                DrawTexture(plataforma, 100, 320, WHITE);
                DrawTexture(plataforma, 830, 320, WHITE);
-               itoa(acertos, acertosStr, 10);
-               DrawText(acertosStr, 10, 10, 40, BLACK);
-                              Rectangle setaMenu = {0,79, 16, 40};
+               Rectangle setaMenu = {0,79, 16, 40};
                if(menuLateral) {
                   Rectangle home = {22,79,39,40};
+                  Rectangle volumeSom = {73, 79, 39, 40};
 
                   DrawTexture(setaT, 0, 0, WHITE); 
                   if (animacaoSetaMenu <= 120) {
@@ -733,7 +672,11 @@ int main(void)
                   else if(animacaoSetaMenu <= 960) {
                      DrawTexture(voltarHome, -20, 0, WHITE);
                   } else {
-                     DrawTexture(voltarHome, 0, 0, WHITE);
+                     if(!semSom) {
+                        DrawTexture(voltarHome, 0, 0, WHITE);
+                     } else {
+                        DrawTexture(voltarHomeSemSom, 0, 0, WHITE);
+                     }
                      menuLateralAberto = true;
                      if (CheckCollisionPointRec(GetMousePosition(), home) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
                         menuLateralAberto = false;
@@ -742,6 +685,33 @@ int main(void)
                         erros = 0;
                         menuLateral = false;
                         cadastro = false;                      
+                     }
+                     if (CheckCollisionPointRec(GetMousePosition(), volumeSom) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                        if(!semSom) {
+                        PauseSound(somMusicaMenu);
+                        PauseSound(somAlternativaCorreta);
+                        PauseSound(somAlternativaErrada);
+                        PauseSound(somClickBotao);
+                        PauseSound(somPulo);
+                        SetSoundVolume(somMusicaMenu, 0.0f);
+                        SetSoundVolume(somAlternativaCorreta, 0.0f);
+                        SetSoundVolume(somAlternativaErrada, 0.0f);
+                        SetSoundVolume(somClickBotao, 0.0f);
+                        SetSoundVolume(somPulo, 0.0f);
+                        semSom = true;
+                        } else {
+                              ResumeSound(somMusicaMenu);
+                              ResumeSound(somAlternativaCorreta);
+                              ResumeSound(somAlternativaErrada);
+                              ResumeSound(somClickBotao);
+                              ResumeSound(somPulo);
+                              SetSoundVolume(somMusicaMenu, 0.20f);
+                              SetSoundVolume(somAlternativaCorreta, 0.10f);
+                              SetSoundVolume(somAlternativaErrada, 0.10f);
+                              SetSoundVolume(somClickBotao, 1.0f);
+                              SetSoundVolume(somPulo, 0.10f);
+                              semSom = false;
+                        }
                      }
                   }
                   animacaoSetaMenu+= 100;
@@ -826,6 +796,8 @@ int main(void)
                tempo = (double)(end - start) / CLOCKS_PER_SEC;
                arquivo = fopen("./include/ranking.txt", "a");
                fprintf(arquivo, "%s %f\n", nomeRecebido,tempo);
+               fclose(arquivo);
+               ordenarRanking("./include/ranking.txt");
                printarArquivo = false;
                }
                ClearBackground(RAYWHITE);
@@ -841,7 +813,7 @@ int main(void)
                               Rectangle setaMenu = {0,79, 16, 40};
                if(menuLateral) {
                   Rectangle home = {22,79,39,40};
-
+                  Rectangle volumeSom = {73, 79, 39, 40};
                   DrawTexture(setaT, 0, 0, WHITE); 
                   if (animacaoSetaMenu <= 120) {
                      DrawTexture(setaF, -100, 0, WHITE);
@@ -858,7 +830,11 @@ int main(void)
                   else if(animacaoSetaMenu <= 960) {
                      DrawTexture(voltarHome, -20, 0, WHITE);
                   } else {
-                     DrawTexture(voltarHome, 0, 0, WHITE);
+                     if(!semSom) {
+                        DrawTexture(voltarHome, 0, 0, WHITE);
+                     } else {
+                        DrawTexture(voltarHomeSemSom, 0, 0, WHITE);
+                     }
                      menuLateralAberto = true;
                      if (CheckCollisionPointRec(GetMousePosition(), home) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
                         menuLateralAberto = false;
@@ -867,6 +843,33 @@ int main(void)
                         erros = 0;
                         menuLateral = false;
                         cadastro = false;                      
+                     }
+                     if (CheckCollisionPointRec(GetMousePosition(), volumeSom) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                        if(!semSom) {
+                        PauseSound(somMusicaMenu);
+                        PauseSound(somAlternativaCorreta);
+                        PauseSound(somAlternativaErrada);
+                        PauseSound(somClickBotao);
+                        PauseSound(somPulo);
+                        SetSoundVolume(somMusicaMenu, 0.0f);
+                        SetSoundVolume(somAlternativaCorreta, 0.0f);
+                        SetSoundVolume(somAlternativaErrada, 0.0f);
+                        SetSoundVolume(somClickBotao, 0.0f);
+                        SetSoundVolume(somPulo, 0.0f);
+                        semSom = true;
+                        } else {
+                              ResumeSound(somMusicaMenu);
+                              ResumeSound(somAlternativaCorreta);
+                              ResumeSound(somAlternativaErrada);
+                              ResumeSound(somClickBotao);
+                              ResumeSound(somPulo);
+                              SetSoundVolume(somMusicaMenu, 0.20f);
+                              SetSoundVolume(somAlternativaCorreta, 0.10f);
+                              SetSoundVolume(somAlternativaErrada, 0.10f);
+                              SetSoundVolume(somClickBotao, 1.0f);
+                              SetSoundVolume(somPulo, 0.10f);
+                              semSom = false;
+                        }
                      }
                   }
                   animacaoSetaMenu+= 100;
@@ -912,7 +915,7 @@ int main(void)
                               Rectangle setaMenu = {0,79, 16, 40};
                if(menuLateral) {
                   Rectangle home = {22,79,39,40};
-
+                  Rectangle volumeSom = {73, 79, 39, 40};
                   DrawTexture(setaT, 0, 0, WHITE); 
                   if (animacaoSetaMenu <= 120) {
                      DrawTexture(setaF, -100, 0, WHITE);
@@ -929,7 +932,11 @@ int main(void)
                   else if(animacaoSetaMenu <= 960) {
                      DrawTexture(voltarHome, -20, 0, WHITE);
                   } else {
-                     DrawTexture(voltarHome, 0, 0, WHITE);
+                     if(!semSom) {
+                        DrawTexture(voltarHome, 0, 0, WHITE);
+                     } else {
+                        DrawTexture(voltarHomeSemSom, 0, 0, WHITE);
+                     }
                      menuLateralAberto = true;
                      if (CheckCollisionPointRec(GetMousePosition(), home) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
                         menuLateralAberto = false;
@@ -938,6 +945,33 @@ int main(void)
                         erros = 0;
                         menuLateral = false;
                         cadastro = false;                      
+                     }
+                     if (CheckCollisionPointRec(GetMousePosition(), volumeSom) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                        if(!semSom) {
+                        PauseSound(somMusicaMenu);
+                        PauseSound(somAlternativaCorreta);
+                        PauseSound(somAlternativaErrada);
+                        PauseSound(somClickBotao);
+                        PauseSound(somPulo);
+                        SetSoundVolume(somMusicaMenu, 0.0f);
+                        SetSoundVolume(somAlternativaCorreta, 0.0f);
+                        SetSoundVolume(somAlternativaErrada, 0.0f);
+                        SetSoundVolume(somClickBotao, 0.0f);
+                        SetSoundVolume(somPulo, 0.0f);
+                        semSom = true;
+                        } else {
+                              ResumeSound(somMusicaMenu);
+                              ResumeSound(somAlternativaCorreta);
+                              ResumeSound(somAlternativaErrada);
+                              ResumeSound(somClickBotao);
+                              ResumeSound(somPulo);
+                              SetSoundVolume(somMusicaMenu, 0.20f);
+                              SetSoundVolume(somAlternativaCorreta, 0.10f);
+                              SetSoundVolume(somAlternativaErrada, 0.10f);
+                              SetSoundVolume(somClickBotao, 1.0f);
+                              SetSoundVolume(somPulo, 0.10f);
+                              semSom = false;
+                        }
                      }
                   }
                   animacaoSetaMenu+= 100;
@@ -1133,4 +1167,83 @@ void ordenarRanking(const char *nomeArquivo) {
         fprintf(arquivo, "%s %.6lf\n", registros[i].nome, registros[i].tempo);
     }
     fclose(arquivo);
+}
+
+void limpar(Contas **head, Contas **tail) {
+    Contas *atual = *head;
+    while (atual) {
+        Contas *proximo = atual->prox;
+        free(atual);
+        atual = proximo;
+    }
+    *head = NULL;
+    *tail = NULL;
+}
+
+void inserirPerguntas(Contas **head1, Contas **tail1, Contas **head2, Contas **tail2, Contas **head3, Contas **tail3) {
+   // Primeiro Nível - Fácil
+   inserir(head1, tail1, "6*0", "0", "6");
+   inserir(head1, tail1, "7+9", "16", "15");
+   inserir(head1, tail1, "8+13", "21", "24");
+   inserir(head1, tail1, "3+7", "10", "14");
+   inserir(head1, tail1, "4+3", "7", "12");
+   inserir(head1, tail1, "5-2", "3", "4");
+   inserir(head1, tail1, "6-1", "5", "4");
+   inserir(head1, tail1, "3*9", "27", "18");
+   inserir(head1, tail1, "3*2", "6", "8");
+   inserir(head1, tail1, "9+8", "17", "18");
+   inserir(head1, tail1, "4+5", "9", "10");
+   inserir(head1, tail1, "12*2", "24", "22");
+   inserir(head1, tail1, "9*1", "9", "8");
+   inserir(head1, tail1, "5*2", "10", "11");
+   inserir(head1, tail1, "1+9", "10", "11");
+   inserir(head1, tail1, "6+3", "9", "10");
+   inserir(head1, tail1, "7-4", "3", "2");
+   inserir(head1, tail1, "8-3", "5", "6");
+   inserir(head1, tail1, "9-2", "7", "8");
+   inserir(head1, tail1, "10-1", "9", "8");
+
+   // Segundo Nível - Médio
+   inserir(head2, tail2, "12+15", "27", "25");
+   inserir(head2, tail2, "14-6", "8", "9");
+   inserir(head2, tail2, "18/2", "9", "8");
+   inserir(head2, tail2, "16*2", "32", "34");
+   inserir(head2, tail2, "25/5", "5", "4");
+   inserir(head2, tail2, "27+9", "36", "34");
+   inserir(head2, tail2, "35-9", "26", "27");
+   inserir(head2, tail2, "22*2", "44", "46");
+   inserir(head2, tail2, "45/9", "5", "6");
+   inserir(head2, tail2, "12*4", "48", "50");
+   inserir(head2, tail2, "36/6", "6", "7");
+   inserir(head2, tail2, "23-5", "18", "17");
+   inserir(head2, tail2, "20/4", "5", "6");
+   inserir(head2, tail2, "36/3", "12", "9");
+   inserir(head2, tail2, "42-17", "25", "29");
+   inserir(head2, tail2, "60/12", "5", "4");
+   inserir(head2, tail2, "63+15", "78", "74");
+   inserir(head2, tail2, "53-20", "33", "31");
+   inserir(head2, tail2, "15*3", "45", "44");
+   inserir(head2, tail2, "32+17", "49", "51");
+
+   // Terceiro Nível - Difícil
+   inserir(head3, tail3, "72/8", "9", "10");
+   inserir(head3, tail3, "70*70", "1400", "140");
+   inserir(head3, tail3, "127-42", "85", "75");
+   inserir(head3, tail3, "9*12", "108", "99");
+   inserir(head3, tail3, "65*3", "195", "196");
+   inserir(head3, tail3, "12*11", "132", "144");
+   inserir(head3, tail3, "44*1.5", "66", "78");
+   inserir(head3, tail3, "29*3", "87", "97");
+   inserir(head3, tail3, "68*1.5", "102", "92");
+   inserir(head3, tail3, "102-37", "65", "75");
+   inserir(head3, tail3, "12/1.5", "8", "10");
+   inserir(head3, tail3, "12^0", "1", "12");
+   inserir(head3, tail3, "0!", "1", "0");
+   inserir(head3, tail3, "203-18", "185", "175");
+   inserir(head3, tail3, "183/3", "61", "63");
+   inserir(head3, tail3, "15*17", "255", "240");
+   inserir(head3, tail3, "225/5", "45", "44");
+   inserir(head3, tail3, "24*8", "192", "210");
+   inserir(head3, tail3, "255+45", "300", "299");
+   inserir(head3, tail3, "193-25", "168", "158");
 }
